@@ -1,0 +1,11 @@
+{
+    "api": {
+        "object": {
+            "database": "rust-api",
+            "collection": "favorites"
+        }
+    },
+    "metrics": {
+        "enabled": true
+    }
+}

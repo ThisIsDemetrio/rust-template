@@ -1,0 +1,27 @@
+services:mongo:
+    image: *mongoImage
+    container_name: kg-mongo
+    extra_hosts:
+      - "${EXTERNAL_HOSTNAME-localhost}:host-gateway"
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          memory: 4Gb
+          cpus: "2"
+    volumes:
+      - mongo:/data/db
+    healthcheck:
+      test: |
+        [ "${MONGODB_VERSION-latest}" = "4-bionic" ] && alias mongosh="mongo"
+        mongosh --host mongo:27017 --eval 'db.stats().ok' || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    command: ["mongod", "--replSet", "local", "--bind_ip", "0.0.0.0"]
+
+volumes:
+  mongo:
